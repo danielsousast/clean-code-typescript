@@ -1,5 +1,6 @@
 import { Coupon } from "./Coupon";
 import { Cpf } from "./Cpf";
+import { FreightCalculator } from "./FreightCalculator";
 import { Item } from "./Item";
 import { OrderItem } from "./OrderItem";
 
@@ -7,13 +8,19 @@ export class Order {
   cpf: Cpf;
   orderItems: OrderItem[];
   coupon: Coupon | undefined;
+  date: Date;
+  private freight: number;
 
-  constructor(cpf: string) {
+  constructor(cpf: string, date: Date = new Date()) {
     this.cpf = new Cpf(cpf);
     this.orderItems = [];
+    this.date = date;
+    this.freight = 0;
   }
 
   addItem(item: Item, quantity: number) {
+    const freight = FreightCalculator.calculate(item);
+    this.freight = freight * quantity;
     this.orderItems.push(
       new OrderItem({
         id: item.id,
@@ -24,7 +31,13 @@ export class Order {
   }
 
   addCoupon(coupon: Coupon) {
-    this.coupon = coupon;
+    if (coupon.isValid(this.date)) {
+      this.coupon = coupon;
+    }
+  }
+
+  getFreight() {
+    return this.freight;
   }
 
   getTotal() {

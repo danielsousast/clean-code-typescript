@@ -2,13 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = void 0;
 const Cpf_1 = require("./Cpf");
+const FreightCalculator_1 = require("./FreightCalculator");
 const OrderItem_1 = require("./OrderItem");
 class Order {
-    constructor(cpf) {
+    constructor(cpf, date = new Date()) {
         this.cpf = new Cpf_1.Cpf(cpf);
         this.orderItems = [];
+        this.date = date;
+        this.freight = 0;
     }
     addItem(item, quantity) {
+        const freight = FreightCalculator_1.FreightCalculator.calculate(item);
+        this.freight = freight * quantity;
         this.orderItems.push(new OrderItem_1.OrderItem({
             id: item.id,
             price: item.price,
@@ -16,7 +21,12 @@ class Order {
         }));
     }
     addCoupon(coupon) {
-        this.coupon = coupon;
+        if (coupon.isValid(this.date)) {
+            this.coupon = coupon;
+        }
+    }
+    getFreight() {
+        return this.freight;
     }
     getTotal() {
         let total = 0;

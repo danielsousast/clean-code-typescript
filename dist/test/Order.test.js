@@ -3,6 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Coupon_1 = require("../src/Coupon");
 const Item_1 = require("../src/Item");
 const Order_1 = require("../src/Order");
+const makeItem = () => {
+    const item = new Item_1.Item({
+        id: 1,
+        category: "any_category",
+        description: "any_description",
+        price: 100,
+        weight: 100,
+        height: 100,
+        width: 100,
+        length: 100,
+    });
+    return item;
+};
 test("should make a order with valid cpf", function () {
     const validCpf = "658.465.400-15";
     const order = new Order_1.Order(validCpf);
@@ -16,39 +29,50 @@ test("should make a order with invalid cpf", function () {
 test("should make a order with 3 items", function () {
     const validCpf = "658.465.400-15";
     const order = new Order_1.Order(validCpf);
-    const item1 = new Item_1.Item({
-        id: 1,
-        category: "Música",
-        description: "CD",
-        price: 30,
-    });
-    const item2 = new Item_1.Item({
-        id: 1,
-        category: "Vídeo",
-        description: "DVD",
-        price: 30,
-    });
-    const item3 = new Item_1.Item({
-        id: 1,
-        category: "Vídeo",
-        description: "VHS",
-        price: 30,
-    });
+    const item1 = makeItem();
+    const item2 = makeItem();
+    const item3 = makeItem();
     order.addItem(item1, 1);
     order.addItem(item2, 2);
     order.addItem(item3, 3);
-    expect(order.getTotal()).toBe(180);
+    expect(order.getTotal()).toBe(600);
 });
 test("should make a order with discount coupon", function () {
     const validCpf = "658.465.400-15";
     const order = new Order_1.Order(validCpf);
-    const item = new Item_1.Item({
-        id: 1,
-        category: "Música",
-        description: "CD",
-        price: 100,
-    });
+    const item = makeItem();
     order.addItem(item, 1);
     order.addCoupon(new Coupon_1.Coupon("VALE20", 20));
     expect(order.getTotal()).toBe(80);
+});
+test("should ignore expired discount coupon", function () {
+    const validCpf = "658.465.400-15";
+    const order = new Order_1.Order(validCpf, new Date("2022-01-10"));
+    const item = makeItem();
+    order.addItem(item, 1);
+    const coupon = new Coupon_1.Coupon("VALE20", 20, new Date("2022-01-01"));
+    order.addCoupon(coupon);
+    expect(order.getTotal()).toBe(100);
+});
+test("should make a order and calculate frete", function () {
+    const validCpf = "658.465.400-15";
+    const order = new Order_1.Order(validCpf, new Date("2022-01-10"));
+    order.addItem(makeItem(), 1);
+    expect(order.getFreight()).toBe(1000);
+});
+test("should make a order and calculate frete with minimum value", function () {
+    const cpf = "658.465.400-15";
+    const order = new Order_1.Order(cpf, new Date("2022-01-10"));
+    const item = new Item_1.Item({
+        id: 1,
+        category: "any_category",
+        description: "any_description",
+        price: 10,
+        weight: 0.5,
+        height: 0.1,
+        width: 0.5,
+        length: 0.5,
+    });
+    order.addItem(item, 1);
+    expect(order.getFreight()).toBe(10);
 });
