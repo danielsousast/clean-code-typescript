@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Cpf_1 = require("../src/Cpf");
+const Cpf_1 = require("../src/domain/entity/Cpf");
 test("Deve validar um cpf", function () {
     const cpf = new Cpf_1.Cpf("847.903.332-05");
     expect(cpf).toBeDefined();

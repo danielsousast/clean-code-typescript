@@ -1,4 +1,4 @@
-import { Coupon } from "../src/Coupon";
+import { Coupon } from "../../src/domain/entity/Coupon";
 
 test("should make a coupon valid", () => {
   const today = new Date("2022-01-01");

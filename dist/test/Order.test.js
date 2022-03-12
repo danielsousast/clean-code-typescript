@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Coupon_1 = require("../src/Coupon");
-const Item_1 = require("../src/Item");
-const Order_1 = require("../src/Order");
+const Coupon_1 = require("../src/domain/entity/Coupon");
+const Item_1 = require("../src/domain/entity/Item");
+const Order_1 = require("../src/domain/entity/Order");
 const makeItem = () => {
     const item = new Item_1.Item({
         id: 1,
