@@ -10,7 +10,7 @@ const makeInputData = () => {
             {idItem: 1, quantity: 1},
             {idItem: 2, quantity: 2},
         ],
-        date: new Date('2022-01-01'),
+        date: new Date('01/01/2022'),
         coupon: 'VALE20'
     }
 }
@@ -23,4 +23,14 @@ test('should make an order', async () => {
     const placeOrderUC = new PlaceOrder(itemRepository, orderRepository, couponRepository);
     const output = await placeOrderUC.execute(input);
     expect(output.total).toBe(300);
+});
+
+test('should make an order with code', async () => {
+    const itemRepository = new ItemRepositoryMemory();
+    const orderRepository = new OrderRepositoryMemory();
+    const couponRepository = new CouponrepositoryMemory();
+    const input = makeInputData()
+    const placeOrderUC = new PlaceOrder(itemRepository, orderRepository, couponRepository);
+    const output = await placeOrderUC.execute(input);
+    expect(output.code).toBe('202200000001');
 });

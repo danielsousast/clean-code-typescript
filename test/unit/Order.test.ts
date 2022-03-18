@@ -82,3 +82,11 @@ test("should make a order and calculate frete with minimum value", function () {
   order.addItem(item, 1);
   expect(order.getFreight()).toBe(10);
 });
+
+test("should make a order with code", function () {
+  const validCpf = "658.465.400-15";
+  const order = new Order(validCpf, new Date("2022-01-10"));
+  order.addItem(makeItem(), 1);
+  const code = order.getCode();
+  expect(code).toBe('202200000001');
+});

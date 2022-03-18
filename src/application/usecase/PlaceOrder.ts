@@ -11,7 +11,8 @@ export class PlaceOrder {
     }
 
     async execute(input: PlaceOrderInput): Promise<PlaceOrderOutput> {
-        const order = new Order(input.cpf, input.date);
+        const sequence = await this.orderRepository.count() + 1;
+        const order = new Order(input.cpf, input.date, sequence);
         for (const orderItem of input.orderItems) {
             const item = await this.itemRepository.findById(orderItem.idItem);
             if(!item) throw new Error('Itrm not found');
@@ -23,6 +24,6 @@ export class PlaceOrder {
         }
         await this.orderRepository.save(order)
         const total = order.getTotal()
-        return new PlaceOrderOutput(total);
+        return new PlaceOrderOutput(total, order.getCode());
     }
 }
